@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PHP Output 1</title>
-     <link href="bootstrap.css" rel="stylesheet">
     <style>
         body {
             font-family: "Arial";
