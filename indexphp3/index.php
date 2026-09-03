@@ -89,5 +89,3 @@
         </table>
     </form>
 <?php include './layout/foot.php'; ?>
-
-
