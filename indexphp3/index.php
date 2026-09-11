@@ -80,11 +80,7 @@ if(isset($_GET["submit"])) {
 
 <body>
 
-
-<!-- ========================= -->
-<!-- REGISTER PERSON -->
-<!-- ========================= -->
-
+<!-- for registration -->
 <h1>PHP Output 3</h1>
 
 <p>
@@ -98,91 +94,71 @@ if(isset($_GET["submit"])) {
 
     <table class="register">
 
-        <tr>
-
-            <td>
-                <label for="fname">
-                    First Name
-                </label>
-            </td>
-
-            <td>
-                <input
-                    type="text"
-                    name="fname"
-                    id="fname"
-                    placeholder="Enter First Name">
-            </td>
-
-        </tr>
-
-
-        <tr>
-
-            <td>
-                <label for="mname">
-                    Middle Name
-                </label>
-            </td>
-
-            <td>
-                <input
-                    type="text"
-                    name="mname"
-                    id="mname"
-                    placeholder="Enter Middle Name">
-            </td>
-
-        </tr>
-
-
-        <tr>
-
-            <td>
-                <label for="lname">
-                    Last Name
-                </label>
-            </td>
-
-            <td>
-                <input
-                    type="text"
-                    name="lname"
-                    id="lname"
-                    placeholder="Enter Last Name">
-            </td>
-
-        </tr>
-
-
-        <tr>
-
-            <td></td>
-
-            <td>
-
-                <input
-                    type="submit"
-                    name="submit"
-                    value="Submit">
-
-                <input
-                    type="reset"
-                    name="cancel"
-                    value="Cancel">
-
-            </td>
-
-        </tr>
-
-    </table>
-
+        <table>
+            <tr>
+                <td>First Name</td>
+                <td>
+                    <input type="text" class="form-control" name="fname" placeholder="Enter First Name" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Middle Name</td>
+                <td>
+                    <input type="text" class="form-control" name="mname" placeholder="Enter Middle Name" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>
+                    <input type="text" class="form-control"  name="lname" placeholder="Enter Last Name" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Age</td>
+                <td>
+                    <input type="number" class="form-control" name="age" placeholder="Enter Age" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>
+                    <label for="gender" class="form-label" ></label>
+                    <select class="form-select" class="form-control" name="gender" required>
+                        <option value="M">Male    </option>
+                        <option value="F">Female  </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>
+                    <input type="email" class="form-control" name="email" placeholder="Enter Email" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>
+                    <input type="text" class="form-control" name="address" placeholder="Enter Complete Address" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Contact Number</td>
+                <td>
+                    <input type="tel" class="form-control"  name="contact_number" placeholder="Enter Contact Number" maxlength="11" pattern="[0-9]{11}"  required />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn btn-primary" value="Submit Data">
+                    <input type="reset" class="btn btn-danger" value="Cancel">
+                </td>
+            </tr>
+        </table>
 </form>
 
 
-<!-- ========================= -->
-<!-- STUDENT LIST -->
-<!-- ========================= -->
+<!-- inputted date from the registration -->
 
 <h2>List Student's Information</h2>
 
