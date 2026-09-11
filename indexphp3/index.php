@@ -1,138 +1,427 @@
-<?php include './layout/head.php'; ?>
+<?php
 
-<div class="container py-4">
+require_once 'dbcontroller.php';
 
-    <h1 class="display-5 fw-bold text-primary">PHP Output 3</h1>
-    <p class="text-muted">
-        This output connects to the database and allows the user to save records into it.
-    </p>
+$dbhandler = new DBController();
 
-    <div class="card shadow-sm mt-4" style="max-width: 650px;">
-        <div class="card-header bg-primary text-white">
-            <h2 class="h4 mb-0">Register Person</h2>
-        </div>
+if(isset($_GET["submit"])) {
 
-        <div class="card-body">
+    $where = array();
 
-            <form action="redirect.php" method="POST">
+    $query = "SELECT * FROM students WHERE ";
 
-                <table class="table table-borderless align-middle">
+    if($_GET["student_id"]) {
+        $where[] = "student_id LIKE '{$_GET["student_id"]}%'";
+    }
 
-                    <tr>
-                        <td>
-                            <label for="fname" class="form-label">First Name</label>
-                        </td>
-                        <td>
-                            <input type="text" name="fname" id="fname"
-                                   class="form-control"
-                                   placeholder="Enter First Name">
-                        </td>
-                    </tr>
+    if($_GET["student_fname"]) {
+        $where[] = "student_fname LIKE '{$_GET["student_fname"]}%'";
+    }
 
-                    <tr>
-                        <td>
-                            <label for="mname" class="form-label">Middle Name</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mname" id="mname"
-                                   class="form-control"
-                                   placeholder="Enter Middle Name">
-                        </td>
-                    </tr>
+    if($_GET["student_mname"]) {
+        $where[] = "student_mname LIKE '{$_GET["student_mname"]}%'";
+    }
 
-                    <tr>
-                        <td>
-                            <label for="lname" class="form-label">Last Name</label>
-                        </td>
-                        <td>
-                            <input type="text" name="lname" id="lname"
-                                   class="form-control"
-                                   placeholder="Enter Last Name">
-                        </td>
-                    </tr>
+    if($_GET["student_lname"]) {
+        $where[] = "student_lname LIKE '{$_GET["student_lname"]}%'";
+    }
 
-                    <tr>
-                        <td>
-                            <label for="age" class="form-label">Age</label>
-                        </td>
-                        <td>
-                            <input type="number" name="age" id="age"
-                                   class="form-control"
-                                   placeholder="Enter Age">
-                        </td>
-                    </tr>
+    if($_GET["student_gender"]) {
+        $where[] = "student_gender LIKE '{$_GET["student_gender"]}%'";
+    }
 
-                    <tr>
-                        <td>
-                            <label for="gender" class="form-label">Gender</label>
-                        </td>
-                        <td>
-                            <select class="form-select" name="gender" id="gender" required>
-                                <option value="M">Male</option>
-                                <option value="F">Female</option>
-                            </select>
-                        </td>
-                    </tr>
+    if(!(count($where) === 0)) {
 
-                    <tr>
-                        <td>
-                            <label for="email" class="form-label">Email</label>
-                        </td>
-                        <td>
-                            <input type="email" name="email" id="email"
-                                   class="form-control"
-                                   placeholder="Enter Email"
-                                   required>
-                        </td>
-                    </tr>
+        $query .= implode(" AND ", $where);
 
-                    <tr>
-                        <td>
-                            <label for="address" class="form-label">Address</label>
-                        </td>
-                        <td>
-                            <input type="text" name="address" id="address"
-                                   class="form-control"
-                                   placeholder="Enter Complete Address"
-                                   required>
-                        </td>
-                    </tr>
+        $query .= " ORDER BY student_lname";
 
-                    <tr>
-                        <td>
-                            <label for="contact" class="form-label">Contact Number</label>
-                        </td>
-                        <td>
-                            <input type="tel" name="contact" id="contact"
-                                   class="form-control"
-                                   placeholder="Enter Contact Number"
-                                   maxlength="11"
-                                   pattern="[0-9]{11}">
-                        </td>
-                    </tr>
+        $result = $dbhandler->executeQuery($query);
 
-                    <tr>
-                        <td></td>
-                        <td class="pt-3">
-                            <input type="submit"
-                                   class="btn btn-success px-4"
-                                   name="submit"
-                                   value="Submit">
+        $where = array();
 
-                            <input type="reset"
-                                   class="btn btn-danger px-4"
-                                   name="cancel"
-                                   value="Cancel">
-                        </td>
-                    </tr>
+    } else {
 
-                </table>
+        $query = "SELECT * FROM students ORDER BY student_lname";
 
-            </form>
+        $result = $dbhandler->executeQuery($query);
 
-        </div>
-    </div>
+    }
 
-</div>
+} else {
 
-<?php include './layout/foot.php'; ?>
+    $query = "SELECT * FROM students ORDER BY student_lname";
+
+    $result = $dbhandler->executeQuery($query);
+
+}
+
+?>
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PHP Output 3</title>
+
+    <link href="DataTables/datatables.min.css"
+          rel="stylesheet"/>
+
+    <?php include 'layout.php'; ?>
+
+</head>
+
+<body>
+
+
+<!-- ========================= -->
+<!-- REGISTER PERSON -->
+<!-- ========================= -->
+
+<h1>PHP Output 3</h1>
+
+<p>
+    This output connects to the database and allows the user to save records into it.
+</p>
+
+
+<form action="redirect.php" method="POST">
+
+    <h2>Register Person</h2>
+
+    <table class="register">
+
+        <tr>
+
+            <td>
+                <label for="fname">
+                    First Name
+                </label>
+            </td>
+
+            <td>
+                <input
+                    type="text"
+                    name="fname"
+                    id="fname"
+                    placeholder="Enter First Name">
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <label for="mname">
+                    Middle Name
+                </label>
+            </td>
+
+            <td>
+                <input
+                    type="text"
+                    name="mname"
+                    id="mname"
+                    placeholder="Enter Middle Name">
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <label for="lname">
+                    Last Name
+                </label>
+            </td>
+
+            <td>
+                <input
+                    type="text"
+                    name="lname"
+                    id="lname"
+                    placeholder="Enter Last Name">
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td></td>
+
+            <td>
+
+                <input
+                    type="submit"
+                    name="submit"
+                    value="Submit">
+
+                <input
+                    type="reset"
+                    name="cancel"
+                    value="Cancel">
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</form>
+
+
+<!-- ========================= -->
+<!-- STUDENT LIST -->
+<!-- ========================= -->
+
+<h2>List Student's Information</h2>
+
+<p>
+    This output connects to the database, retrieves data and allows user to
+    filter and search records.
+</p>
+
+
+<form action="index.php" method="GET">
+
+<table id="example">
+
+    <thead>
+
+        <tr>
+
+            <th>Student Id</th>
+
+            <th>First Name</th>
+
+            <th>Middle Name</th>
+
+            <th>Last Name</th>
+
+            <th>Gender</th>
+
+            <th>Action</th>
+
+        </tr>
+
+
+        <tr>
+
+            <th>
+
+                <input
+                    type="text"
+                    name="student_id"
+                    value="<?php
+
+                    echo isset($_GET['student_id'])
+                        ? $_GET['student_id']
+                        : "";
+
+                    ?>">
+
+            </th>
+
+
+            <th>
+
+                <input
+                    type="text"
+                    name="student_fname"
+                    value="<?php
+
+                    echo isset($_GET['student_fname'])
+                        ? $_GET['student_fname']
+                        : "";
+
+                    ?>">
+
+            </th>
+
+
+            <th>
+
+                <input
+                    type="text"
+                    name="student_mname"
+                    value="<?php
+
+                    echo isset($_GET['student_mname'])
+                        ? $_GET['student_mname']
+                        : "";
+
+                    ?>">
+
+            </th>
+
+
+            <th>
+
+                <input
+                    type="text"
+                    name="student_lname"
+                    value="<?php
+
+                    echo isset($_GET['student_lname'])
+                        ? $_GET['student_lname']
+                        : "";
+
+                    ?>">
+
+            </th>
+
+
+            <th>
+
+                <select
+                    name="student_gender"
+                    id="student_gender">
+
+                    <option value="">
+                        Select All
+                    </option>
+
+                    <option value="M"
+                        <?php
+
+                        echo isset($_GET['student_gender'])
+                        ?
+                        (($_GET['student_gender']) == "M"
+                        ? "selected"
+                        : "")
+                        : "";
+
+                        ?>>
+
+                        Male
+
+                    </option>
+
+                    <option value="F"
+                        <?php
+
+                        echo isset($_GET['student_gender'])
+                        ?
+                        (($_GET['student_gender']) == "F"
+                        ? "selected"
+                        : "")
+                        : "";
+
+                        ?>>
+
+                        Female
+
+                    </option>
+
+                </select>
+
+            </th>
+
+
+            <th>
+
+                <input
+                    type="submit"
+                    name="submit"
+                    value="Filter">
+
+            </th>
+
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+    <?php
+
+    if($result) {
+
+        foreach ($result as $key => $value) {
+
+            echo '
+
+            <tr>
+
+                <td>
+                    '. $value['student_id'] .'
+                </td>
+
+                <td>
+                    '. $value['student_fname'] .'
+                </td>
+
+                <td>
+                    '. $value['student_mname'] .'
+                </td>
+
+                <td>
+                    '. $value['student_lname'] .'
+                </td>
+
+                <td>
+                    '. $value['student_gender'] .'
+                </td>
+
+                <td>
+                </td>
+
+            </tr>
+
+            ';
+
+        }
+
+    }
+
+    ?>
+
+    </tbody>
+
+</table>
+
+</form>
+
+
+<script src="DataTables/jQuery-3.6.0/jquery-3.6.0.min.js">
+</script>
+
+<script src="DataTables/datatables.min.js">
+</script>
+
+
+<script>
+
+$(document).ready(() => {
+
+    $('#example').DataTable({
+
+        order: [],
+
+        bFilter: false,
+
+        bSortCellsTop: true,
+
+        pageLength: 25
+
+    });
+
+});
+
+</script>
+
+
+</body>
+
+</html>
